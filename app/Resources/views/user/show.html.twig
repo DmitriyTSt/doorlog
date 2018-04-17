@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>User</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>First_name</th>
+                <td>{{ user.firstname }}</td>
+            </tr>
+            <tr>
+                <th>Last_name</th>
+                <td>{{ user.lastname }}</td>
+            </tr>
+            <tr>
+                <th>Middle_name</th>
+                <td>{{ user.middlename }}</td>
+            </tr>
+            <tr>
+                <th>Avatar</th>
+                <td>{{ user.avatar }}</td>
+            </tr>
+            <tr>
+                <th>Background</th>
+                <td>{{ user.background }}</td>
+            </tr>
+            <tr>
+                <th>Created_at</th>
+                <td>{{ user.createdat }}</td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td>{{ user.role }}</td>
+            </tr>
+            <tr>
+                <th>In_office</th>
+                <td>{% if user.inoffice %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Birthday</th>
+                <td>{{ user.birthday }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{ user.phone }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Skype</th>
+                <td>{{ user.skype }}</td>
+            </tr>
+            <tr>
+                <th>Slack</th>
+                <td>{{ user.slack }}</td>
+            </tr>
+            <tr>
+                <th>Telegram</th>
+                <td>{{ user.telegram }}</td>
+            </tr>
+            <tr>
+                <th>Card</th>
+                <td>{{ user.card }}</td>
+            </tr>
+            <tr>
+                <th>Personal_id</th>
+                <td>{{ user.personalid }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ user.password }}</td>
+            </tr>
+            <tr>
+                <th>Salt</th>
+                <td>{{ user.salt }}</td>
+            </tr>
+            <tr>
+                <th>Halftime</th>
+                <td>{% if user.halftime %}Yes{% else %}No{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('user_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('user_edit', { 'id': user.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

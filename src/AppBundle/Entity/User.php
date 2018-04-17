@@ -4,12 +4,14 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * User
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
+ * @UniqueEntity("email", message="Данный email уже зарегистрирован")
  */
 class User
 {
@@ -94,7 +96,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=64, nullable=true, unique=true)
+     * @ORM\Column(name="email", type="string", length=64, nullable=false, unique=true)
      */
     private $email;
 
@@ -165,10 +167,17 @@ class User
     {
         $date = new \DateTime('now');
         $this->setCreatedAt($date->getTimestamp());
-        $this->setSalt(md5(microtime() . uniqid()));
+        $this->setSalt(substr(md5(microtime() . uniqid()), 0, 5));
         $this->devices = new ArrayCollection();
     }
 
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
     /**
      * Get id

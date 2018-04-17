@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Users list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>First_name</th>
+                <th>Last_name</th>
+                <th>Middle_name</th>
+                <th>Avatar</th>
+                <th>Background</th>
+                <th>Created_at</th>
+                <th>Role</th>
+                <th>In_office</th>
+                <th>Birthday</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Skype</th>
+                <th>Slack</th>
+                <th>Telegram</th>
+                <th>Card</th>
+                <th>Personal_id</th>
+                <th>Password</th>
+                <th>Salt</th>
+                <th>Halftime</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td><a href="{{ path('user_show', { 'id': user.id }) }}">{{ user.id }}</a></td>
+                <td>{{ user.firstname }}</td>
+                <td>{{ user.lastname }}</td>
+                <td>{{ user.middlename }}</td>
+                <td>{{ user.avatar }}</td>
+                <td>{{ user.background }}</td>
+                <td>{{ user.createdat }}</td>
+                <td>{{ user.role }}</td>
+                <td>{% if user.inoffice %}Yes{% else %}No{% endif %}</td>
+                <td>{{ user.birthday }}</td>
+                <td>{{ user.phone }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.skype }}</td>
+                <td>{{ user.slack }}</td>
+                <td>{{ user.telegram }}</td>
+                <td>{{ user.card }}</td>
+                <td>{{ user.personalid }}</td>
+                <td>{{ user.password }}</td>
+                <td>{{ user.salt }}</td>
+                <td>{% if user.halftime %}Yes{% else %}No{% endif %}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('user_show', { 'id': user.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('user_edit', { 'id': user.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('user_new') }}">Create a new user</a>
+        </li>
+    </ul>
+{% endblock %}
