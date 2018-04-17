@@ -1,0 +1,11 @@
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
+api:
+    resource: '@AppBundle/Controller/Api'
+    prefix: 'api/'
+    type: annotation
+web:
+    resource: '@AppBundle/Controller/Web'
+    prefix: 'web/'
+    type: annotation
