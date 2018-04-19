@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="20ed3f50-05ba-46aa-ace5-152a39a8264a" name="local_apache" url="http://localhost">
+        <fileTransfer port="0" mountedRoot="/var/www/doorlog" accessType="MOUNT" />
+      </webServer>
+    </option>
+  </component>
+</project>
