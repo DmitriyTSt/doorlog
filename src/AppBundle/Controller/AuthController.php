@@ -114,4 +114,50 @@ class AuthController extends Controller
         }
         return SimpleJsonApi::createResponseObj($device->getUser());
     }
+
+    /**
+     * Reset password
+     *
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/api/update-password/", name="api_security_update_password", methods={"POST"})
+     */
+    public function updatePassword(Request $request)
+    {
+        if ($request->headers->get('apikey') == null) {
+            throw new Exception('Ошибка авторизации');
+        }
+        $content = $request->getContent();
+        $json = json_decode($content, true);
+        if (!$json) {
+            throw new Exception('поля не заполнены');
+        }
+        if (array_key_exists('data', $json)) {
+            if (array_key_exists("email", $json['data'])) {
+                if (array_key_exists("oldpass", $json['data'])) {
+                    if (array_key_exists("password", $json['data'])) {
+                        $em = $this->getDoctrine()->getManager();
+                        $user = $em->getRepository(User::class)->findOneBy(['email' => $json['data']['email']]);
+                        if ($user) {
+                            $encoder = $this->get('security.password_encoder');
+                            $old_pass = $encoder->encodePassword($user, $json['data']['oldpass']);
+                            if ($old_pass == $user->getPassword()) {
+                                $user->setPassword($encoder->encodePassword($user, $json['data']['password']));
+                                $em->persist($user);
+                                $em->flush();
+                                return SimpleJsonApi::createResponseObj($user);
+                            }
+                            throw new Exception('Старый пароль неверен');
+                        }
+                        throw new Exception('Пользователь не найден');
+                    }
+                    throw new Exception('поле password не задано');
+                }
+                throw new Exception('поле oldpass не задано');
+            }
+            throw new Exception('поле email не задано');
+        }
+        throw new Exception('поле data не задано');
+    }
 }
