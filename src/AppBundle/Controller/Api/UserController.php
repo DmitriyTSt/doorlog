@@ -130,7 +130,7 @@ class UserController extends Controller
     /**
      * Count user's bonuses.
      *
-     * @Route("/{id}/bonuses_count", name="api_user_holidays_count")
+     * @Route("/{id}/bonuses_count", name="api_user_bonuses_count")
      * @Method("GET")
      */
     public function bonusesCountAction(Request $request, User $user) {
