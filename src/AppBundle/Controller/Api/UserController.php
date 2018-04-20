@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller\Api;
 
+use AppBundle\Entity\Bonus;
+use AppBundle\Entity\Holiday;
 use AppBundle\Entity\User;
 use AppBundle\Service\SimpleJsonApi;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -111,6 +113,33 @@ class UserController extends Controller
 
         return $this->redirectToRoute('user_index');
     }
+
+    /**
+     * Count user's holidays.
+     *
+     * @Route("/{id}/holidays_count", name="api_user_holidays_count")
+     * @Method("GET")
+     */
+    public function holidaysCountAction(Request $request, User $user) {
+        $holidays = $this->getDoctrine()->getManager()->getRepository(Holiday::class)->findBy([
+            'user' => $user
+        ]);
+        return SimpleJsonApi::createResponseObj(count($holidays));
+    }
+
+    /**
+     * Count user's bonuses.
+     *
+     * @Route("/{id}/bonuses_count", name="api_user_holidays_count")
+     * @Method("GET")
+     */
+    public function bonusesCountAction(Request $request, User $user) {
+        $bonuses = $this->getDoctrine()->getManager()->getRepository(Bonus::class)->findBy([
+            'user' => $user
+        ]);
+        return SimpleJsonApi::createResponseObj(count($bonuses));
+    }
+
 
     /**
      * Creates a form to delete a user entity.
