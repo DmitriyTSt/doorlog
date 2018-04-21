@@ -78,6 +78,7 @@ class AuthController extends Controller
         if (array_key_exists('data', $json)) {
             if (array_key_exists("email", $json['data'])) {
                 $em = $this->getDoctrine()->getManager();
+                /** @var User $user */
                 $user = $em->getRepository(User::class)->findOneBy(['email' => $json['data']['email']]);
                 if ($user) {
                     $user->setPassword(mt_rand(10000, 99999));
@@ -106,6 +107,7 @@ class AuthController extends Controller
         if ($request->headers->get('apikey') == null) {
             throw new Exception('header apikey не задан');
         }
+        /** @var Device $device */
         $device = $this->getDoctrine()->getManager()->getRepository(Device::class)->findOneBy([
             'apikey' => $request->headers->get('apikey')
         ]);

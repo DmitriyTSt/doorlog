@@ -6,6 +6,8 @@ use AppBundle\Entity\Bonus;
 use AppBundle\Entity\Holiday;
 use AppBundle\Entity\User;
 use AppBundle\Service\SimpleJsonApi;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +37,7 @@ class UserController extends Controller
     /**
      * Creates a new user entity.
      *
-     * @Route("/new", name="api_user_new")
+     * @Route("/new", name="api_us$metadataer_new")
      * @Method({"GET", "POST"})
      */
     public function newAction(Request $request)
@@ -72,26 +74,47 @@ class UserController extends Controller
     /**
      * Displays a form to edit an existing user entity.
      *
-     * @Route("/{id}/edit", name="api_user_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}", name="api_user_edit")
+     * @Method("PATCH")
      */
     public function editAction(Request $request, User $user)
     {
-        $deleteForm = $this->createDeleteForm($user);
-        $editForm = $this->createForm('AppBundle\Form\UserType', $user);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('user_edit', array('id' => $user->getId()));
+        /** @var User $newUser */
+        $data1 = json_decode($request->getContent(), true);
+        $data = array();
+        foreach ($data1 as $fieldName => $result) {
+            $data[$this->from_camel_case($fieldName)] = $result;
         }
+        $em = $this->getDoctrine()->getManager();
+        /** @var ClassMetadata $metadata */
+        $metadata = $em->getMetadataFactory()->getMetadataFor(User::class);
+        $id = array();
+        foreach ($metadata->getIdentifierFieldNames() as $identifier) {
+            if (!isset($data[$identifier])) {
+                throw new InvalidArgumentException('Missing identifier');
+            }
+            $id[$identifier] = $data[$identifier];
+            unset($data[$identifier]);
+        }
+        $entity = $em->find($metadata->getName(), $id);
+        foreach ($metadata->getFieldNames() as $field) {
+            //add necessary checks about field read/write operation feasibility here
+            if (isset($data[$field])) {
+                //careful! setters are not being called! Inflection is up to you if you need it!
+                $metadata->setFieldValue($entity, $field, $data[$field]);
+            }
+        }
+        $em->flush();
+        return SimpleJsonApi::createResponseObj($entity);
+    }
 
-        return $this->render('user/edit.html.twig', array(
-            'user' => $user,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+    function from_camel_case($input) {
+        preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $input, $matches);
+        $ret = $matches[0];
+        foreach ($ret as &$match) {
+            $match = $match == strtoupper($match) ? strtolower($match) : lcfirst($match);
+        }
+        return implode('_', $ret);
     }
 
     /**
